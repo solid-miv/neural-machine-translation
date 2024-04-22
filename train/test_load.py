@@ -14,12 +14,12 @@ text_vec_layer_de = tf.keras.layers.TextVectorization(
     vocab_size, output_sequence_length=max_length)
 
 # Load the vocabulary from the .txt file
-with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_en.txt"), 'r') as f:
+with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_en.txt"), 'r') as f:
     vocabulary_en = [line.strip() for line in f]
 
 text_vec_layer_en.set_vocabulary(vocabulary_en)
 
-with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_de.txt"), 'r') as f:
+with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'r') as f:
     vocabulary_de = [line.strip() for line in f]
 
 text_vec_layer_de.set_vocabulary(vocabulary_de)

@@ -1,6 +1,6 @@
 """
 Run this script to train the English to German translation model.
-N.B. You can use the already trained model's weights in the models/english-to-german/en_ge directory.
+N.B. You can use the already trained model's weights in the models/english-to-german/en_de directory.
 """
 import os
 
@@ -14,7 +14,7 @@ MAX_LENGTH = 50  # maximum length of a sentence in the dataset
 EPOCHS = 10
 
 
-def split_data(sentences_en, sentences_de):
+def split_data_german(sentences_en, sentences_de):
     """
     Split the English and German sentences into training and validation sets.
 
@@ -28,7 +28,7 @@ def split_data(sentences_en, sentences_de):
     # load the text vectorization layer for German
     text_vec_layer_de = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
 
-    with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_de.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'r') as f:
         vocabulary_de = [line.strip() for line in f]
 
     text_vec_layer_de.set_vocabulary(vocabulary_de)
@@ -68,12 +68,12 @@ def create_architecture(embed_size=128, vocab_size=VOCAB_SIZE,
         vocab_size, output_sequence_length=max_length)
 
     # Load the vocabulary from the .txt file
-    with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_en.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_en.txt"), 'r') as f:
         vocabulary_en = [line.strip() for line in f]
 
     text_vec_layer_en.set_vocabulary(vocabulary_en)
 
-    with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_de.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'r') as f:
         vocabulary_de = [line.strip() for line in f]
 
     text_vec_layer_de.set_vocabulary(vocabulary_de)
@@ -189,7 +189,7 @@ def save_weights(model, name):
 if __name__ == "__main__":
     sentences_en, sentences_de = load_data()
 
-    X_train, X_valid, X_train_dec, X_valid_dec, Y_train, Y_valid = split_data(sentences_en, sentences_de)
+    X_train, X_valid, X_train_dec, X_valid_dec, Y_train, Y_valid = split_data_german(sentences_en, sentences_de)
 
     model = create_architecture()
 
@@ -197,6 +197,6 @@ if __name__ == "__main__":
 
     history = train_model(model, X_train, X_train_dec, Y_train, X_valid, X_valid_dec, Y_valid)
 
-    save_weights(model, "en_ge")
+    # save_weights(model, "en_ge")
 
     print("Model has been trained and saved successfully!")

@@ -61,11 +61,11 @@ def initialize_vocabularies(sentences_en, sentences_de, vocab_size=VOCAB_SIZE, m
     vocab_de = text_vec_layer_de.get_vocabulary()
 
     # save the states of the text vectorization layers
-    with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_en.txt"), 'w', encoding="utf8") as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_en.txt"), 'w', encoding="utf8") as f:
         for item in vocab_en:
             f.write("%s\n" % item)
 
-    with open(os.path.join(os.getcwd(), "models/vocabularies/vocab_de.txt"), 'w', encoding="utf8") as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'w', encoding="utf8") as f:
         for item in vocab_de:
             f.write("%s\n" % item)
 

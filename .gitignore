@@ -1,3 +1,5 @@
 # exclude virtual environment folder
 virtenv/
-models/english-to-german/__pycache__/
+
+# exclude __pycache__ folder
+train/__pycache__/
