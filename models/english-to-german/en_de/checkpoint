@@ -1,0 +1,2 @@
+model_checkpoint_path: "en_de"
+all_model_checkpoint_paths: "en_de"
