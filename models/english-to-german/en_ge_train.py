@@ -5,36 +5,13 @@ N.B. You can use the already trained model's weights in the models/english-to-ge
 import os
 
 import tensorflow as tf
-import numpy as np
+
+from data_preprocess import load_data
 
 # constants
 VOCAB_SIZE = 3000
 MAX_LENGTH = 50  # maximum length of a sentence in the dataset
 EPOCHS = 10
-
-
-def load_data():
-    """
-    Load the English-German translation dataset and returns the English and German sentences as lists.
-
-    Returns:
-        tuple(list, list): A tuple containing the English and German sentences as lists (english_sentences, german_sentences).
-    """
-    translations = []
-    data_directory = os.path.join(os.getcwd(), "data/deu.txt")
-
-    with open(data_directory, 'r', encoding="utf8") as file:
-        for line in file:
-            parts = line.split('\t')
-            english = parts[0]  # the English sentence is before the first tab
-            german = parts[1]   # the German sentence is after the first tab and before the second
-            translations.append((english, german))
-    
-    np.random.shuffle(translations)
-
-    sentences_en, sentences_de = zip(*translations)
-
-    return (sentences_en, sentences_de)
 
 
 def split_data(sentences_en, sentences_de):
