@@ -197,6 +197,6 @@ if __name__ == "__main__":
 
     history = train_model(model, X_train, X_train_dec, Y_train, X_valid, X_valid_dec, Y_valid)
 
-    # save_weights(model, "en_ge")
+    save_weights(model, "en_ge")
 
     print("Model has been trained and saved successfully!")
