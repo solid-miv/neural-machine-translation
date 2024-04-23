@@ -14,7 +14,7 @@ MAX_LENGTH = 50  # maximum length of a sentence in the dataset
 EPOCHS = 10
 
 
-def split_data_german(sentences_en, sentences_de):
+def split_data_en_ge(sentences_en, sentences_de):
     """
     Split the English and German sentences into training and validation sets.
 
@@ -45,7 +45,7 @@ def split_data_german(sentences_en, sentences_de):
     return (X_train, X_valid, X_train_dec, X_valid_dec, Y_train, Y_valid)
 
 
-def create_architecture(embed_size=128, vocab_size=VOCAB_SIZE, 
+def create_architecture_en_ge(embed_size=128, vocab_size=VOCAB_SIZE, 
                         max_length=MAX_LENGTH, N = 2, num_heads=8, dropout_rate=0.1, n_units=128):
     """
     Create the architecture for the English to German translation transformer model.
@@ -175,9 +175,9 @@ def train_model(model, X_train, X_train_dec, Y_train, X_valid, X_valid_dec, Y_va
     return history
 
 
-def save_weights(model, name):
+def save_weights_en_ge(model, name):
     """
-    Save the model in .keras format.
+    Save the English-to-German model's weights.
 
     Args:
         model (tf.keras.Model): The model which weights to save.
@@ -189,14 +189,14 @@ def save_weights(model, name):
 if __name__ == "__main__":
     sentences_en, sentences_de = load_data()
 
-    X_train, X_valid, X_train_dec, X_valid_dec, Y_train, Y_valid = split_data_german(sentences_en, sentences_de)
+    X_train, X_valid, X_train_dec, X_valid_dec, Y_train, Y_valid = split_data_en_ge(sentences_en, sentences_de)
 
-    model = create_architecture()
+    model = create_architecture_en_ge()
 
     model = compile_model(model)
 
     history = train_model(model, X_train, X_train_dec, Y_train, X_valid, X_valid_dec, Y_valid)
 
-    save_weights(model, "en_ge")
+    save_weights_en_ge(model, "en_ge")
 
     print("Model has been trained and saved successfully!")

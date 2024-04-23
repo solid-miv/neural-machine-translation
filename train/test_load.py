@@ -1,3 +1,6 @@
+"""
+TODO: delete this file after finishing the main part of the project
+"""
 import os
 
 import tensorflow as tf
