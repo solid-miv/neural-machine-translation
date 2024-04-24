@@ -28,7 +28,7 @@ def split_data_en_ge(sentences_en, sentences_de):
     # load the text vectorization layer for German
     text_vec_layer_de = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
 
-    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_de.txt"), 'r') as f:
         vocabulary_de = [line.strip() for line in f]
 
     text_vec_layer_de.set_vocabulary(vocabulary_de)
@@ -68,14 +68,12 @@ def create_architecture_en_ge(embed_size=128, vocab_size=VOCAB_SIZE,
         vocab_size, output_sequence_length=max_length)
 
     # Load the vocabulary from the .txt file
-    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_en.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_en.txt"), 'r') as f:
         vocabulary_en = [line.strip() for line in f]
-
     text_vec_layer_en.set_vocabulary(vocabulary_en)
 
-    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_de.txt"), 'r') as f:
         vocabulary_de = [line.strip() for line in f]
-
     text_vec_layer_de.set_vocabulary(vocabulary_de)
     
     encoder_inputs = tf.keras.layers.Input(shape=[], dtype=tf.string)

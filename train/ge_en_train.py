@@ -29,10 +29,10 @@ def split_data_ge_en(sentences_en, sentences_de):
     # load the text vectorization layer for German
     text_vec_layer_en = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
 
-    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_en.txt"), 'r') as f:
-        vocabulary_de = [line.strip() for line in f]
+    with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_en.txt"), 'r') as f:
+        vocabulary_en = [line.strip() for line in f]
 
-    text_vec_layer_en.set_vocabulary(vocabulary_de)
+    text_vec_layer_en.set_vocabulary(vocabulary_en)
 
     X_train = tf.constant(sentences_de[:100_000])
     X_valid = tf.constant(sentences_de[100_000:])
@@ -61,23 +61,19 @@ def create_architecture_ge_en(embed_size=128, vocab_size=VOCAB_SIZE,
         n_units (int): The number of units for the first Dense layer in each Feed Forward block.
     
     Returns:
-        tf.keras.Model: The English to German translation transformer model.
+        tf.keras.Model: The German to English translation transformer model.
     """
-    text_vec_layer_en = tf.keras.layers.TextVectorization(
-        vocab_size, output_sequence_length=max_length)
-    text_vec_layer_de = tf.keras.layers.TextVectorization(
-        vocab_size, output_sequence_length=max_length)
+    text_vec_layer_de = tf.keras.layers.TextVectorization(vocab_size, output_sequence_length=max_length)
+    text_vec_layer_en = tf.keras.layers.TextVectorization(vocab_size, output_sequence_length=max_length)
 
     # Load the vocabulary from the .txt file
-    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_en.txt"), 'r') as f:
-        vocabulary_en = [line.strip() for line in f]
-
-    text_vec_layer_en.set_vocabulary(vocabulary_en)
-
-    with open(os.path.join(os.getcwd(), "train/vocabularies/vocab_de.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_de.txt"), 'r') as f:
         vocabulary_de = [line.strip() for line in f]
-
     text_vec_layer_de.set_vocabulary(vocabulary_de)
+
+    with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_en.txt"), 'r') as f:
+        vocabulary_en = [line.strip() for line in f]
+    text_vec_layer_en.set_vocabulary(vocabulary_en)
     
     encoder_inputs = tf.keras.layers.Input(shape=[], dtype=tf.string)
     decoder_inputs = tf.keras.layers.Input(shape=[], dtype=tf.string)
@@ -96,7 +92,6 @@ def create_architecture_ge_en(embed_size=128, vocab_size=VOCAB_SIZE,
     decoder_in = decoder_embeddings + pos_embed_layer(tf.range(batch_max_len_dec))
 
     encoder_pad_mask = tf.math.not_equal(encoder_input_ids, 0)[:, tf.newaxis]
-
     Z = encoder_in
     for _ in range(N):
         skip = Z
@@ -109,7 +104,7 @@ def create_architecture_ge_en(embed_size=128, vocab_size=VOCAB_SIZE,
         Z = tf.keras.layers.Dense(embed_size)(Z)
         Z = tf.keras.layers.Dropout(dropout_rate)(Z)
         Z = tf.keras.layers.LayerNormalization()(tf.keras.layers.Add()([Z, skip]))
-    
+
     decoder_pad_mask = tf.math.not_equal(decoder_input_ids, 0)[:, tf.newaxis]
     causal_mask = tf.linalg.band_part(  # creates a lower triangular matrix
         tf.ones((batch_max_len_dec, batch_max_len_dec), tf.bool), -1, 0)
