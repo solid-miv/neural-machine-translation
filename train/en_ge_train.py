@@ -6,7 +6,7 @@ import os
 
 import tensorflow as tf
 
-from data_preprocess import load_data
+from .data_preprocess import load_data
 
 # constants
 VOCAB_SIZE = 3000

@@ -6,8 +6,8 @@ import os
 
 import tensorflow as tf
 
-from data_preprocess import load_data
-from en_ge_train import compile_model, train_model
+from .data_preprocess import load_data
+from .en_ge_train import compile_model, train_model
 
 # constants
 VOCAB_SIZE = 3000
