@@ -5,7 +5,6 @@ from tkinter import messagebox
 import tensorflow as tf
 import numpy as np
 
-from train import data_preprocess
 from train.en_ge_train import create_architecture_en_ge, compile_model
 from train.ge_en_train import create_architecture_ge_en
 
