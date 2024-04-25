@@ -1,0 +1,4 @@
+python==3.10.2
+tensorflow==2.15.0
+numpy==1.26.4
+tkinter==8.6
