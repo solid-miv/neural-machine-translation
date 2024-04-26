@@ -35,6 +35,12 @@ model_ge_en = compile_model(model_ge_en)
 
 def translate_en_ge(sentence, model=model_en_ge, max_length=MAX_LENGTH):
     translation = ""
+    punctuation = ""
+
+    # extracting punctuation from the sentence
+    if sentence[-1] in ['.', '?', '!']:
+        punctuation = sentence[-1]
+        sentence = sentence[:-1]
 
     for word_idx in range(max_length):
         X = np.array([sentence])  # encoder input
@@ -48,11 +54,19 @@ def translate_en_ge(sentence, model=model_en_ge, max_length=MAX_LENGTH):
 
         translation += " " + predicted_word
 
+    translation += punctuation
+
     return translation.strip()
 
 
 def translate_ge_en(sentence, model=model_ge_en, max_length=50):
     translation = ""
+    punctuation = ""
+
+    # extracting punctuation from the sentence
+    if sentence[-1] in ['.', '?', '!']:
+        punctuation = sentence[-1]
+        sentence = sentence[:-1]
 
     for word_idx in range(max_length):
         X = np.array([sentence])  # encoder input
@@ -66,11 +80,14 @@ def translate_ge_en(sentence, model=model_ge_en, max_length=50):
 
         translation += " " + predicted_word
 
+    translation += punctuation
+
     return translation.strip()
 
 
 def eng_to_ger():
     text = eng_text.get("1.0", "end-1c")
+
     if text == "":
         messagebox.showwarning("Warning", "Please, enter the text to translate")
     else:
@@ -80,8 +97,9 @@ def eng_to_ger():
         ger_translation.insert(tk.END, translation)
 
 
-def translate_ger_to_eng():
+def ger_to_eng():
     text = ger_text.get("1.0", "end-1c")
+
     if text == "":
         messagebox.showwarning("Warning", "Please, enter the text to translate")
     else:
@@ -94,25 +112,29 @@ def translate_ger_to_eng():
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Neural Machine Translator")
+    root.iconbitmap(os.path.join(os.getcwd(), "assets/ger_eng.ico"))
+
+    # Set the initial window size
+    root.geometry("700x200")
 
     tk.Label(root, text="English Text:", font=("Arial", 10)).grid(row=0, column=0)
-    eng_text = tk.Text(root, height=5, width=50)
-    eng_text.grid(row=1, column=0)
+    eng_text = tk.Text(root, height=3, width=40)  # Adjusted height and width
+    eng_text.grid(row=1, column=0, padx=10, pady=5)  # Added padx and pady for spacing
 
     btn_eng_to_ger = tk.Button(root, text="Translate English to German", command=eng_to_ger)
-    btn_eng_to_ger.grid(row=2, column=0)
+    btn_eng_to_ger.grid(row=2, column=0, padx=10, pady=5)  # Added padx and pady for spacing
 
-    ger_translation = tk.Text(root, height=5, width=50)
-    ger_translation.grid(row=3, column=0)
+    ger_translation = tk.Text(root, height=3, width=40)  # Adjusted height and width
+    ger_translation.grid(row=3, column=0, padx=10, pady=5)  # Added padx and pady for spacing
 
     tk.Label(root, text="German Text:", font=("Arial", 10)).grid(row=0, column=1)
-    ger_text = tk.Text(root, height=5, width=50)
-    ger_text.grid(row=1, column=1)
+    ger_text = tk.Text(root, height=3, width=40)  # Adjusted height and width
+    ger_text.grid(row=1, column=1, padx=10, pady=5)  # Added padx and pady for spacing
 
-    btn_ger_to_eng = tk.Button(root, text="Translate German to English", command=translate_ger_to_eng)
-    btn_ger_to_eng.grid(row=2, column=1)
+    btn_ger_to_eng = tk.Button(root, text="Translate German to English", command=ger_to_eng)
+    btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  # Added padx and pady for spacing
 
-    eng_translation = tk.Text(root, height=5, width=50)
-    eng_translation.grid(row=3, column=1)
+    eng_translation = tk.Text(root, height=3, width=40)  # Adjusted height and width
+    eng_translation.grid(row=3, column=1, padx=10, pady=5)  # Added padx and pady for spacing
 
     root.mainloop()
