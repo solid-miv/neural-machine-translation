@@ -55,7 +55,7 @@ def create_model_en_ge():
         model_en_ge (Model): The created model for English-to-German translation.
     """
     model_en_ge = create_architecture_en_ge()
-    model_en_ge.load_weights(os.path.join(os.getcwd(), "models/english-to-german/en_de"))
+    model_en_ge.load_weights(os.path.join(os.getcwd(), "models/english-to-german/en_de/en_de"))
     model_en_ge = compile_model(model_en_ge)
 
     return model_en_ge
@@ -151,7 +151,7 @@ def translate_ge_en(sentence, model, text_vec_layer_en, max_length=MAX_LENGTH):
     return translation.strip()
 
 
-def eng_to_ger(model, text_vec_layer_de):
+def eng_to_ger(model, text_vec_layer_de, eng_text, ger_translation):
     """
     Retrieves the text from the `eng_text` widget and checks if it is empty.
     If the text is not empty, it calls the `translate_en_ge` function to perform the translation.
@@ -160,6 +160,8 @@ def eng_to_ger(model, text_vec_layer_de):
     Parameters:
         model (tf.keras.Model): The translation model to use for translation.
         text_vec_layer_de (tf.keras.layers.TextVectorization): The text vectorization layer for German text.
+        eng_text (tk.Text): The widget containing the English text to be translated.
+        ger_translation (tk.Text): The widget where the translated German text will be inserted.
     """
     text = eng_text.get("1.0", "end-1c")
 
@@ -171,15 +173,17 @@ def eng_to_ger(model, text_vec_layer_de):
         ger_translation.insert(tk.END, translation)
 
 
-def ger_to_eng(model, text_vec_layer_en):
+def ger_to_eng(model, text_vec_layer_en, ger_text, eng_translation):
     """
     Retrieves the text from the `ger_text` widget and checks if it is empty.
     If the text is not empty, it calls the `translate_ge_en` function to perform the translation.
     The translated text is then inserted into the `eng_translation` widget.
 
     Parameters:
-        model (Model): The translation model to use for translation.
-        text_vec_layer_en (TextVectorization): The text vectorization layer for English text.
+        model (tf.keras.Model): The translation model to use for translation.
+        text_vec_layer_en (tf.keras.layers.TextVectorization): The text vectorization layer for English text.
+        ger_text (tk.Text): The widget containing the German text to be translated.
+        eng_translation (tk.Text): The widget where the translated English text will be inserted.
     """
     text = ger_text.get("1.0", "end-1c")
 
@@ -191,6 +195,44 @@ def ger_to_eng(model, text_vec_layer_en):
         eng_translation.insert(tk.END, translation)
 
 
+def instantiate_window():
+    """
+    Creates and configures the main window for the Neural Machine Translator application.
+
+    Returns:
+        root (tk.Tk): The root window object.
+    """
+    root = tk.Tk()
+    root.title("Neural Machine Translator")
+    root.iconbitmap(os.path.join(os.getcwd(), "assets/ger_eng.ico"))
+
+    root.geometry("700x200")
+
+    tk.Label(root, text="English Text:", font=("Courier", 12)).grid(row=0, column=0)
+    eng_text = tk.Text(root, height=3, width=40) 
+    eng_text.grid(row=1, column=0, padx=10, pady=5)  
+
+    btn_eng_to_ger = tk.Button(root, text="Translate English to German", 
+                               command=lambda: eng_to_ger(model_en_ge, text_vec_layer_de, eng_text, ger_translation))
+    btn_eng_to_ger.grid(row=2, column=0, padx=10, pady=5) 
+
+    ger_translation = tk.Text(root, height=3, width=40) 
+    ger_translation.grid(row=3, column=0, padx=10, pady=5)  
+
+    tk.Label(root, text="German Text:", font=("Courier", 12)).grid(row=0, column=1)
+    ger_text = tk.Text(root, height=3, width=40)  
+    ger_text.grid(row=1, column=1, padx=10, pady=5)  
+
+    btn_ger_to_eng = tk.Button(root, text="Translate German to English", 
+                               command=lambda: ger_to_eng(model_ge_en, text_vec_layer_en, ger_text, eng_translation))
+    btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  
+
+    eng_translation = tk.Text(root, height=3, width=40) 
+    eng_translation.grid(row=3, column=1, padx=10, pady=5)
+
+    return root
+
+
 if __name__ == "__main__":
     text_vec_layer_de = create_text_layer_de()
     text_vec_layer_en = create_text_layer_en()
@@ -198,32 +240,5 @@ if __name__ == "__main__":
     model_en_ge=create_model_en_ge()
     model_ge_en=create_model_ge_en()
 
-    root = tk.Tk()
-    root.title("Neural Machine Translator")
-    root.iconbitmap(os.path.join(os.getcwd(), "assets/ger_eng.ico"))
-
-    root.geometry("700x200")
-
-    tk.Label(root, text="English Text:", font=("Arial", 10)).grid(row=0, column=0)
-    eng_text = tk.Text(root, height=3, width=40) 
-    eng_text.grid(row=1, column=0, padx=10, pady=5)  
-
-    btn_eng_to_ger = tk.Button(root, text="Translate English to German", 
-                               command=lambda: eng_to_ger(model_en_ge, text_vec_layer_de))
-    btn_eng_to_ger.grid(row=2, column=0, padx=10, pady=5) 
-
-    ger_translation = tk.Text(root, height=3, width=40) 
-    ger_translation.grid(row=3, column=0, padx=10, pady=5)  
-
-    tk.Label(root, text="German Text:", font=("Arial", 10)).grid(row=0, column=1)
-    ger_text = tk.Text(root, height=3, width=40)  
-    ger_text.grid(row=1, column=1, padx=10, pady=5)  
-
-    btn_ger_to_eng = tk.Button(root, text="Translate German to English", 
-                               command=lambda: ger_to_eng(model_ge_en, text_vec_layer_en))
-    btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  
-
-    eng_translation = tk.Text(root, height=3, width=40) 
-    eng_translation.grid(row=3, column=1, padx=10, pady=5)  
-
+    root = instantiate_window()
     root.mainloop()
