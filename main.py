@@ -22,7 +22,7 @@ def create_text_layer_de():
     """
     text_vec_layer_de = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
 
-    with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_de.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_de.txt"), 'r', encoding="utf-8") as f:
         vocabulary_de = [line.strip() for line in f]
 
     text_vec_layer_de.set_vocabulary(vocabulary_de)
@@ -39,7 +39,7 @@ def create_text_layer_en():
     """
     text_vec_layer_en = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
 
-    with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_en.txt"), 'r') as f:
+    with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_en.txt"), 'r', encoding="utf-8") as f:
         vocabulary_en = [line.strip() for line in f]
 
     text_vec_layer_en.set_vocabulary(vocabulary_en)
