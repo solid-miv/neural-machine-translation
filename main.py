@@ -12,28 +12,82 @@ from train.ge_en_train import create_architecture_ge_en
 VOCAB_SIZE = 3000
 MAX_LENGTH = 50
 
-# instantiate the text vectorization layers
-text_vec_layer_de = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
-with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_de.txt"), 'r') as f:
-    vocabulary_de = [line.strip() for line in f]
-text_vec_layer_de.set_vocabulary(vocabulary_de)
 
-text_vec_layer_en = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
-with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_en.txt"), 'r') as f:
-    vocabulary_en = [line.strip() for line in f]
-text_vec_layer_en.set_vocabulary(vocabulary_en)
+def create_text_layer_de():
+    """
+    Creates a text vectorization layer for the German language.
 
-# instantiate the models
-model_en_ge = create_architecture_en_ge()
-model_en_ge.load_weights(os.path.join(os.getcwd(), "models/english-to-german/en_de/en_de"))
-model_en_ge = compile_model(model_en_ge)
+    Returns:
+        text_vec_layer_de (tf.keras.layers.TextVectorization): The text vectorization layer for German.
+    """
+    text_vec_layer_de = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
 
-model_ge_en = create_architecture_ge_en()
-model_ge_en.load_weights(os.path.join(os.getcwd(), "models/german-to-english/de_en/de_en"))
-model_ge_en = compile_model(model_ge_en)
+    with open(os.path.join(os.getcwd(), "train/vocabularies_en_de/vocab_de.txt"), 'r') as f:
+        vocabulary_de = [line.strip() for line in f]
+
+    text_vec_layer_de.set_vocabulary(vocabulary_de)
+
+    return text_vec_layer_de
 
 
-def translate_en_ge(sentence, model=model_en_ge, max_length=MAX_LENGTH):
+def create_text_layer_en():
+    """
+    Creates a text vectorization layer for English text.
+
+    Returns:
+        text_vec_layer_en (tf.keras.layers.TextVectorization): The text vectorization layer for English text.
+    """
+    text_vec_layer_en = tf.keras.layers.TextVectorization(VOCAB_SIZE, output_sequence_length=MAX_LENGTH)
+
+    with open(os.path.join(os.getcwd(), "train/vocabularies_de_en/vocab_en.txt"), 'r') as f:
+        vocabulary_en = [line.strip() for line in f]
+
+    text_vec_layer_en.set_vocabulary(vocabulary_en)
+
+    return text_vec_layer_en
+
+
+def create_model_en_ge():
+    """
+    Creates and returns a model for English-to-German translation.
+
+    Returns:
+        model_en_ge (Model): The created model for English-to-German translation.
+    """
+    model_en_ge = create_architecture_en_ge()
+    model_en_ge.load_weights(os.path.join(os.getcwd(), "models/english-to-german/en_de"))
+    model_en_ge = compile_model(model_en_ge)
+
+    return model_en_ge
+
+
+def create_model_ge_en():
+    """
+    Creates and returns a model for German-to-English translation.
+
+    Returns:
+        model_ge_en (Model): The compiled model for German-to-English translation.
+    """
+    model_ge_en = create_architecture_ge_en()
+    model_ge_en.load_weights(os.path.join(os.getcwd(), "models/german-to-english/de_en/de_en"))
+    model_ge_en = compile_model(model_ge_en)
+
+    return model_ge_en
+
+
+def translate_en_ge(sentence, model, text_vec_layer_de, max_length=MAX_LENGTH):
+    """
+    Translates an English sentence to German using a given model.
+
+    Parameters:
+        sentence (str): The English sentence to be translated.
+        model (tf.keras.Model): The translation model to be used. 
+        text_vec_layer_de (tf.keras.layers.TextVectorization): The text vectorization layer for German. 
+        max_length (int, optional): The maximum length of the translated sentence. Defaults to MAX_LENGTH constant.
+
+    Returns:
+        str: The translated German sentence.
+    """
     translation = ""
     punctuation = ""
 
@@ -59,7 +113,19 @@ def translate_en_ge(sentence, model=model_en_ge, max_length=MAX_LENGTH):
     return translation.strip()
 
 
-def translate_ge_en(sentence, model=model_ge_en, max_length=50):
+def translate_ge_en(sentence, model, text_vec_layer_en, max_length=MAX_LENGTH):
+    """
+    Translates a given sentence from German to English using a pre-trained model.
+
+    Parameters:
+        sentence (str): The sentence to be translated.
+        model (tf.keras.Model, optional): The pre-trained translation model.
+        text_vec_layer_en (tf.keras.layers.TextVectorization, optional): The text vectorization layer for English.
+        max_length (int, optional): The maximum length of the translated sentence. Defaults to MAX_LENGTH constant.
+
+    Returns:
+        str: The translated sentence.
+    """
     translation = ""
     punctuation = ""
 
@@ -85,56 +151,79 @@ def translate_ge_en(sentence, model=model_ge_en, max_length=50):
     return translation.strip()
 
 
-def eng_to_ger():
+def eng_to_ger(model, text_vec_layer_de):
+    """
+    Retrieves the text from the `eng_text` widget and checks if it is empty.
+    If the text is not empty, it calls the `translate_en_ge` function to perform the translation.
+    The translated text is then inserted into the `ger_translation` widget.
+
+    Parameters:
+        model (tf.keras.Model): The translation model to use for translation.
+        text_vec_layer_de (tf.keras.layers.TextVectorization): The text vectorization layer for German text.
+    """
     text = eng_text.get("1.0", "end-1c")
 
     if text == "":
         messagebox.showwarning("Warning", "Please, enter the text to translate")
     else:
-        # Call your translation function here
-        translation = translate_en_ge(text)
+        translation = translate_en_ge(text, model, text_vec_layer_de)
         ger_translation.delete("1.0", tk.END)
         ger_translation.insert(tk.END, translation)
 
 
-def ger_to_eng():
+def ger_to_eng(model, text_vec_layer_en):
+    """
+    Retrieves the text from the `ger_text` widget and checks if it is empty.
+    If the text is not empty, it calls the `translate_ge_en` function to perform the translation.
+    The translated text is then inserted into the `eng_translation` widget.
+
+    Parameters:
+        model (Model): The translation model to use for translation.
+        text_vec_layer_en (TextVectorization): The text vectorization layer for English text.
+    """
     text = ger_text.get("1.0", "end-1c")
 
     if text == "":
         messagebox.showwarning("Warning", "Please, enter the text to translate")
     else:
-        # Call your translation function here
-        translation = translate_ge_en(text)
+        translation = translate_ge_en(text, model, text_vec_layer_en)
         eng_translation.delete("1.0", tk.END)
         eng_translation.insert(tk.END, translation)
 
 
 if __name__ == "__main__":
+    text_vec_layer_de = create_text_layer_de()
+    text_vec_layer_en = create_text_layer_en()
+
+    model_en_ge=create_model_en_ge()
+    model_ge_en=create_model_ge_en()
+
     root = tk.Tk()
     root.title("Neural Machine Translator")
     root.iconbitmap(os.path.join(os.getcwd(), "assets/ger_eng.ico"))
 
-    # Set the initial window size
     root.geometry("700x200")
 
     tk.Label(root, text="English Text:", font=("Arial", 10)).grid(row=0, column=0)
-    eng_text = tk.Text(root, height=3, width=40)  # Adjusted height and width
-    eng_text.grid(row=1, column=0, padx=10, pady=5)  # Added padx and pady for spacing
+    eng_text = tk.Text(root, height=3, width=40) 
+    eng_text.grid(row=1, column=0, padx=10, pady=5)  
 
-    btn_eng_to_ger = tk.Button(root, text="Translate English to German", command=eng_to_ger)
-    btn_eng_to_ger.grid(row=2, column=0, padx=10, pady=5)  # Added padx and pady for spacing
+    btn_eng_to_ger = tk.Button(root, text="Translate English to German", 
+                               command=lambda: eng_to_ger(model_en_ge, text_vec_layer_de))
+    btn_eng_to_ger.grid(row=2, column=0, padx=10, pady=5) 
 
-    ger_translation = tk.Text(root, height=3, width=40)  # Adjusted height and width
-    ger_translation.grid(row=3, column=0, padx=10, pady=5)  # Added padx and pady for spacing
+    ger_translation = tk.Text(root, height=3, width=40) 
+    ger_translation.grid(row=3, column=0, padx=10, pady=5)  
 
     tk.Label(root, text="German Text:", font=("Arial", 10)).grid(row=0, column=1)
-    ger_text = tk.Text(root, height=3, width=40)  # Adjusted height and width
-    ger_text.grid(row=1, column=1, padx=10, pady=5)  # Added padx and pady for spacing
+    ger_text = tk.Text(root, height=3, width=40)  
+    ger_text.grid(row=1, column=1, padx=10, pady=5)  
 
-    btn_ger_to_eng = tk.Button(root, text="Translate German to English", command=ger_to_eng)
-    btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  # Added padx and pady for spacing
+    btn_ger_to_eng = tk.Button(root, text="Translate German to English", 
+                               command=lambda: ger_to_eng(model_ge_en, text_vec_layer_en))
+    btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  
 
-    eng_translation = tk.Text(root, height=3, width=40)  # Adjusted height and width
-    eng_translation.grid(row=3, column=1, padx=10, pady=5)  # Added padx and pady for spacing
+    eng_translation = tk.Text(root, height=3, width=40) 
+    eng_translation.grid(row=3, column=1, padx=10, pady=5)  
 
     root.mainloop()
