@@ -205,10 +205,11 @@ def instantiate_window():
     root = tk.Tk()
     root.title("Neural Machine Translator")
     root.iconbitmap(os.path.join(os.getcwd(), "assets/ger_eng.ico"))
+    root.option_add("*Button.Font", "Courier 10")
 
     root.geometry("700x200")
 
-    tk.Label(root, text="English Text:", font=("Courier", 12)).grid(row=0, column=0)
+    tk.Label(root, text="English Text:", font=("Courier", 10)).grid(row=0, column=0)
     eng_text = tk.Text(root, height=3, width=40) 
     eng_text.grid(row=1, column=0, padx=10, pady=5)  
 
