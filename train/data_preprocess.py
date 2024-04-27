@@ -42,7 +42,7 @@ def initialize_vocabularies_en_de(sentences_en, sentences_de, vocab_size=VOCAB_S
     Initialize the text vectorization layers for the English and German sentences, 
     which can be used to translate from English to German.
 
-    Args:
+    Parameters:
         sentences_en (list): A list of English sentences.
         sentences_de (list): A list of German sentences.
         vocab_size (int): The size of the vocabulary.
@@ -72,7 +72,7 @@ def initialize_vocabularies_de_en(sentences_en, sentences_de, vocab_size=VOCAB_S
     Initialize the text vectorization layers for the English and German sentences, 
     which can be used to translate from German to English.
 
-    Args:
+    Parameters:
         sentences_en (list): A list of English sentences.
         sentences_de (list): A list of German sentences.
         vocab_size (int): The size of the vocabulary.

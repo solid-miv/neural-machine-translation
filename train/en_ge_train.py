@@ -18,7 +18,7 @@ def split_data_en_ge(sentences_en, sentences_de):
     """
     Split the English and German sentences into training and validation sets.
 
-    Args:
+    Parameters:
         sentences_en (list): A list of English sentences.
         sentences_de (list): A list of German sentences.
     
@@ -50,7 +50,7 @@ def create_architecture_en_ge(embed_size=128, vocab_size=VOCAB_SIZE,
     """
     Create the architecture for the English to German translation transformer model.
 
-    Args:
+    Parameters:
         embed_size (int): The embedding size.
         vocab_size (int): The size of the vocabulary.
         max_length (int): The maximum length of the sentences.
@@ -140,7 +140,7 @@ def compile_model(model):
     """
     Compile the model.
 
-    Args:
+    Parameters:
         model (tf.keras.Model): The model to compile.
     
     Returns:
@@ -155,7 +155,7 @@ def train_model(model, X_train, X_train_dec, Y_train, X_valid, X_valid_dec, Y_va
     """
     Train the model.
 
-    Args:
+    Parameters:
         model (tf.keras.Model): The model to train.
         X_train (tf.Tensor): The training data.
         X_train_dec (tf.Tensor): The training decoder data.
@@ -177,7 +177,7 @@ def save_weights_en_ge(model, name):
     """
     Save the English-to-German model's weights.
 
-    Args:
+    Parameters:
         model (tf.keras.Model): The model which weights to save.
         name (str): The name of the file to save the weights to.
     """
