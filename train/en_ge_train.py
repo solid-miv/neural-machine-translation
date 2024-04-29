@@ -1,5 +1,5 @@
 """
-Run this script to train the English to German translation model.
+Run this script as a moule to train the English to German translation model with a command "python -m train.en_ge_train".
 N.B. You can use the already trained model's weights in the models/english-to-german/en_de directory.
 """
 import os
