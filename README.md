@@ -25,3 +25,14 @@ The Transformer model introduces an architecture solely based on attention mecha
 - **Positional Encoding**: Since the model doesn't have any recurrence or convolution, positional encodings are added to provide the model with some information about the relative or absolute position of the tokens in the sequence.
 
 - **Residual Connections and Layer Normalization**: These are used around each sub-layer, followed by layer normalization.
+
+### Data description
+See `data/deu.txt` file for the data used in training. `data/LICENSE.md` contains the information about the source and the license. In short, the *transformer* model was trained using the short phrases and single words passed to the **encoder** with their translations passed to **decoder**.
+
+### Project structure
+- `assets/` contains the icons and screenshots used in the project.
+- `data/` contains the data `deu.txt` and the license `LICENSE.md` files.
+- `models/` contains the weights of 2 models: English-to-German (`english-to-german/en_de/`) & German-to-English (`german-to-english/de_en/`) translators.
+- `train/` contains `vocabularies_de_en` and `vocabularies_en_de` with the vocabularies for the models. It also includes `data_preprocess.py` file, which can load the data and initialize vocabularies, `en_ge_train.py` & `ge_en_train.py`that can be started as modules (see their file-level docstrings) in order to train the models.
+- `main.py` that you can run to start the project.
+- `requirements.txt` contains external python modules used in the project and their versions.
