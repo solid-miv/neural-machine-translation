@@ -47,5 +47,5 @@ See `data/deu.txt` file for the data used in training. `data/LICENSE.md` contain
 #### Challenges
 - However, it is not trained to define the part of speech. That's why all the German words have the lowercase letters.
 And sometimes the user may find that the NMT just doesn't know the word, since the vocabulary size is $3000$ words:
-- ![Unknown word](/assets/unknown_word.png) 
+- ![Unknown word occurence](/assets/unknown_word.png)
 - Though you can see that an article 'a' was placed correctly with a help of a context.
