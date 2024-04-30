@@ -151,48 +151,27 @@ def translate_ge_en(sentence, model, text_vec_layer_en, max_length=MAX_LENGTH):
     return translation.strip()
 
 
-def eng_to_ger(model, text_vec_layer_de, eng_text, ger_translation):
+def display_translation(model, text_vec_layer, text_widget, translation_widget, translation_func):
     """
-    Retrieves the text from the `eng_text` widget and checks if it is empty.
-    If the text is not empty, it calls the `translate_en_ge` function to perform the translation.
-    The translated text is then inserted into the `ger_translation` widget.
+    Display the translation of the given text using the provided model and text vector layer.
 
     Parameters:
-        model (tf.keras.Model): The translation model to use for translation.
-        text_vec_layer_de (tf.keras.layers.TextVectorization): The text vectorization layer for German text.
-        eng_text (tk.Text): The widget containing the English text to be translated.
-        ger_translation (tk.Text): The widget where the translated German text will be inserted.
+        model (tf.keras.Model): The translation model to use.
+        text_vec_layer (tf.keras.layers.TextVectorization): The text vector layer to use for translation.
+        text_widget (tk.Text): The widget containing the text to be translated.
+        translation_widget (tk.Text): The widget to display the translation.
+        translation_func (function): The translation function to use for translation.
     """
-    text = eng_text.get("1.0", "end-1c")
+    text_input = text_widget.get("1.0", "end-1c")
 
-    if text == "":
+    if text_input == "":
         messagebox.showwarning("Warning", "Please, enter the text to translate")
     else:
-        translation = translate_en_ge(text, model, text_vec_layer_de)
-        ger_translation.delete("1.0", tk.END)
-        ger_translation.insert(tk.END, translation)
-
-
-def ger_to_eng(model, text_vec_layer_en, ger_text, eng_translation):
-    """
-    Retrieves the text from the `ger_text` widget and checks if it is empty.
-    If the text is not empty, it calls the `translate_ge_en` function to perform the translation.
-    The translated text is then inserted into the `eng_translation` widget.
-
-    Parameters:
-        model (tf.keras.Model): The translation model to use for translation.
-        text_vec_layer_en (tf.keras.layers.TextVectorization): The text vectorization layer for English text.
-        ger_text (tk.Text): The widget containing the German text to be translated.
-        eng_translation (tk.Text): The widget where the translated English text will be inserted.
-    """
-    text = ger_text.get("1.0", "end-1c")
-
-    if text == "":
-        messagebox.showwarning("Warning", "Please, enter the text to translate")
-    else:
-        translation = translate_ge_en(text, model, text_vec_layer_en)
-        eng_translation.delete("1.0", tk.END)
-        eng_translation.insert(tk.END, translation)
+        result = translation_func(text_input, model, text_vec_layer)
+        translation_widget.config(state=tk.NORMAL)  # enable the widget to insert the translation
+        translation_widget.delete("1.0", tk.END)
+        translation_widget.insert(tk.END, result)
+        translation_widget.config(state=tk.DISABLED)  # disable the widget to prevent editing
 
 
 def instantiate_window():
@@ -214,7 +193,8 @@ def instantiate_window():
     eng_text.grid(row=1, column=0, padx=10, pady=5)  
 
     btn_eng_to_ger = tk.Button(root, text="Translate English to German", 
-                               command=lambda: eng_to_ger(model_en_ge, text_vec_layer_de, eng_text, ger_translation))
+                               command=lambda: display_translation(model_en_ge, text_vec_layer_de, eng_text,
+                                                                   ger_translation, translate_en_ge))
     btn_eng_to_ger.grid(row=2, column=0, padx=10, pady=5) 
 
     ger_translation = tk.Text(root, height=3, width=40) 
@@ -225,7 +205,8 @@ def instantiate_window():
     ger_text.grid(row=1, column=1, padx=10, pady=5)  
 
     btn_ger_to_eng = tk.Button(root, text="Translate German to English", 
-                               command=lambda: ger_to_eng(model_ge_en, text_vec_layer_en, ger_text, eng_translation))
+                               command=lambda: display_translation(model_ge_en, text_vec_layer_en, ger_text, 
+                                                                   eng_translation, translate_ge_en))
     btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  
 
     eng_translation = tk.Text(root, height=3, width=40) 
