@@ -174,6 +174,16 @@ def display_translation(model, text_vec_layer, text_widget, translation_widget, 
         translation_widget.config(state=tk.DISABLED)  # disable the widget to prevent editing
 
 
+def close_application(root):
+    """
+    Closes the application by destroying the root window.
+
+    Parameters:
+        root (tk.Tk): The root window object.
+    """
+    root.destroy()
+
+
 def instantiate_window():
     """
     Creates and configures the main window for the Neural Machine Translator application.
@@ -186,7 +196,7 @@ def instantiate_window():
     root.iconbitmap(os.path.join(os.getcwd(), "assets/ger_eng.ico"))
     root.option_add("*Button.Font", "Courier 10")
 
-    root.geometry("700x200")
+    root.geometry("700x230")
 
     tk.Label(root, text="English Text:", font=("Courier", 10)).grid(row=0, column=0)
     eng_text = tk.Text(root, height=3, width=40) 
@@ -208,6 +218,12 @@ def instantiate_window():
                                command=lambda: display_translation(model_ge_en, text_vec_layer_en, ger_text, 
                                                                    eng_translation, translate_ge_en))
     btn_ger_to_eng.grid(row=2, column=1, padx=10, pady=5)  
+
+    btn_close = tk.Button(root, text="Close Application",
+                          command=lambda: close_application(root),
+                          bg="darkred", fg="white", 
+                          font=("Arial", 10, "bold"))
+    btn_close.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky="E")    
 
     eng_translation = tk.Text(root, height=3, width=40) 
     eng_translation.grid(row=3, column=1, padx=10, pady=5)
