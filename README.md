@@ -36,3 +36,16 @@ See `data/deu.txt` file for the data used in training. `data/LICENSE.md` contain
 - `train/` contains `vocabularies_de_en` and `vocabularies_en_de` with the vocabularies for the models. It also includes `data_preprocess.py` file, which can load the data and initialize vocabularies, `en_ge_train.py` & `ge_en_train.py`that can be started as modules (see their file-level docstrings) in order to train the models.
 - `main.py` that you can run to start the project.
 - `requirements.txt` contains external python modules used in the project and their versions.
+
+### Application preview
+#### Correct translation
+- ![Screenshot of a correct translation](/assets/correct_translation.png)
+- The user can type in the text to translate in the corresponding text field. He is also able to erase all the written text and close the application by pressing the buttons.
+#### Role of context
+- Moreover, NMT translator takes into account the gender of the word and the context:
+- ![The gender of the word](/assets/word_gender.png)
+#### Challenges
+- However, it is not trained to define the part of speech. That's why all the German words have the lowercase letters.
+And sometimes the user may find that the NMT just doesn't know the word, since the vocabulary size is $3000$ words:
+- ![Unknown word](/assets/unknown_word.png) 
+- Though you can see that an article 'a' was placed correctly with a help of a context.
