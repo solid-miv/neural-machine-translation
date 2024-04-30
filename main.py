@@ -184,6 +184,29 @@ def close_application(root):
     root.destroy()
 
 
+def clear_all_text_fields(eng_text, ger_text, eng_translation, ger_translation):
+    """
+    Clears all the text fields in the application.
+
+    Parameters:
+        eng_text (tk.Text): The widget containing the English text to be translated.
+        ger_text (tk.Text): The widget containing the German text to be translated.
+        eng_translation (tk.Text): The widget where the translated English text will be inserted.
+        ger_translation (tk.Text): The widget where the translated German text will be inserted.
+    """
+    eng_text.delete("1.0", tk.END)
+    ger_text.delete("1.0", tk.END)
+
+    # Enable the translation text fields, clear them, and then disable them again
+    eng_translation.config(state=tk.NORMAL)
+    eng_translation.delete("1.0", tk.END)
+    eng_translation.config(state=tk.DISABLED)
+
+    ger_translation.config(state=tk.NORMAL)
+    ger_translation.delete("1.0", tk.END)
+    ger_translation.config(state=tk.DISABLED)
+
+
 def instantiate_window():
     """
     Creates and configures the main window for the Neural Machine Translator application.
@@ -223,7 +246,12 @@ def instantiate_window():
                           command=lambda: close_application(root),
                           bg="darkred", fg="white", 
                           font=("Arial", 10, "bold"))
-    btn_close.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky="E")    
+    btn_close.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky="E")
+
+    btn_clear = tk.Button(root, text="Clear All Text Fields",
+                      command=lambda: clear_all_text_fields(eng_text, ger_text, eng_translation, ger_translation), 
+                      font=("Arial", 10))
+    btn_clear.grid(row=4, column=0, columnspan=2, padx=10, pady=5)    
 
     eng_translation = tk.Text(root, height=3, width=40) 
     eng_translation.grid(row=3, column=1, padx=10, pady=5)
