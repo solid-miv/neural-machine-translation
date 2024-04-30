@@ -1,3 +1,6 @@
+"""
+Run this file via "python main.py" command to start the Neural Machine Translator application.
+"""
 import os
 import tkinter as tk
 from tkinter import messagebox
